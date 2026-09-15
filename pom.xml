@@ -72,6 +72,36 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- Provides RestTemplateBuilder autoconfiguration, now split out of spring-boot-autoconfigure -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-restclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Provides TestRestTemplate and @AutoConfigureTestRestTemplate, now split out of spring-boot-test -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-resttestclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Provides @WebMvcTest, now split out of spring-boot-test-autoconfigure -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Provides @DataJpaTest, now split out of spring-boot-test-autoconfigure -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-data-jpa-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Provides @AutoConfigureTestDatabase, now split out of spring-boot-test-autoconfigure -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <!-- Workaround for AOT issue (https://github.com/spring-projects/spring-framework/pull/33949) -->
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
@@ -138,12 +168,12 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mysql</artifactId>
+      <artifactId>testcontainers-mysql</artifactId>
       <scope>test</scope>
     </dependency>
 
