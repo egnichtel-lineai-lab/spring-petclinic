@@ -3,5 +3,7 @@
   "scheduledUpgradesPerDay" : 1,
   "maxOpenPrs" : 3,
   "jcapeScanEnabled" : true,
-  "sqlcapeScanEnabled" : false
+  "sqlcapeScanEnabled" : true,
+  "sqlcapeConnectionUrl" : "jdbc:sqlserver://192.168.49.1:1433;databaseName=ProfilerDemo;encrypt=false;trustServerCertificate=true",
+  "sqlcapeDatabaseIdentity" : "jdbc:sqlserver://demo-mssql:1433;databaseName=ProfilerDemo"
 }
