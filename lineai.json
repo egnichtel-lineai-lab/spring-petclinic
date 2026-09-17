@@ -4,6 +4,6 @@
   "maxOpenPrs" : 3,
   "jcapeScanEnabled" : true,
   "sqlcapeScanEnabled" : true,
-  "sqlcapeConnectionUrl" : "jdbc:sqlserver://192.168.49.1:1433;databaseName=ProfilerDemo;encrypt=false;trustServerCertificate=true",
+  "sqlcapeConnectionUrl" : "jdbc:sqlserver://192.168.49.1:1433;databaseName=ProfilerDemo;encrypt=false;trustServerCertificate=true;loginTimeout=30",
   "sqlcapeDatabaseIdentity" : "jdbc:sqlserver://demo-mssql:1433;databaseName=ProfilerDemo"
 }
