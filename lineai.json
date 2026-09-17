@@ -2,5 +2,6 @@
   "branchNamePrefix" : "lineai/",
   "scheduledUpgradesPerDay" : 1,
   "maxOpenPrs" : 3,
-  "jcapeScanEnabled" : true
+  "jcapeScanEnabled" : true,
+  "sqlcapeScanEnabled" : false
 }
