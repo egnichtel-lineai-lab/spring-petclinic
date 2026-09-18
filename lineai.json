@@ -5,5 +5,16 @@
   "jcapeScanEnabled" : true,
   "sqlcapeScanEnabled" : true,
   "sqlcapeConnectionUrl" : "jdbc:sqlserver://192.168.49.1:1433;databaseName=ProfilerDemo;encrypt=false;trustServerCertificate=true;loginTimeout=30",
-  "sqlcapeDatabaseIdentity" : "jdbc:sqlserver://demo-mssql:1433;databaseName=ProfilerDemo"
+  "sqlcapeDatabaseIdentity" : "jdbc:sqlserver://demo-mssql:1433;databaseName=ProfilerDemo",
+  "dynamicScanEnabled" : true,
+  "dynamicAppType" : "java",
+  "dynamicHostType" : "linux",
+  "dynamicSshHost" : "claude-linux-dev.homenet.hm",
+  "dynamicSshUsername" : "claude",
+  "dynamicArtifactPath" : "/home/claude/e2e/java/java-demo-web.jar",
+  "dynamicAppStartCommand" : "java -jar /home/claude/e2e/java/java-demo-web.jar",
+  "dynamicExerciseCommand" : "DEMO_WEB_URL=http://localhost:8083 DEMO_TICKS=12 java -jar /home/claude/e2e/java/java-demo-app.jar",
+  "dynamicReadinessUrl" : "http://localhost:8083/",
+  "dynamicJavaNamespaces" : "com.codelogic.demo",
+  "dynamicTargetNotes" : "Lab server TLS CA is already installed in the host's system and Java trust stores; no extra -Djavax.net.ssl flags are needed. The app depends on SQL Server and RabbitMQ at 10.10.190.33 (reachable from this host). The exercise command runs about 2 minutes and exits on its own. Default shell is bash."
 }
