@@ -18,3 +18,4 @@
   "dynamicJavaNamespaces" : "com.codelogic.demo",
   "dynamicTargetNotes" : "Lab server TLS CA is already installed in the host's system and Java trust stores; no extra -Djavax.net.ssl flags are needed. The app depends on SQL Server and RabbitMQ at 10.10.190.33 (reachable from this host). The exercise command runs about 2 minutes and exits on its own. Default shell is bash."
 }
+
