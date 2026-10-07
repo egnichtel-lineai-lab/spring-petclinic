@@ -16,5 +16,36 @@
   "dynamicExerciseCommand": "DEMO_WEB_URL=http://localhost:8083 DEMO_TICKS=12 java -jar /home/claude/e2e/java/java-demo-app.jar",
   "dynamicReadinessUrl": "http://localhost:8083/",
   "dynamicJavaNamespaces": "com.codelogic.demo",
-  "dynamicTargetNotes": "The Lineai server is reachable from this host at IP 10.10.190.33 under the hostname in the server URL \u2014 if that hostname does not resolve to that IP from this host, add a hosts-file mapping. The server TLS certificate is issued by a PRIVATE CA that is NOT pre-trusted on this host; set up trust per your runbook. The application depends on SQL Server and RabbitMQ at 10.10.190.33 (reachable from this host). The exercise command runs about 2 minutes and exits on its own. Default shell is bash; a sudo password is available."
+  "dynamicTargetNotes": "The Lineai server is reachable from this host at IP 10.10.190.33 under the hostname in the server URL \u2014 if that hostname does not resolve to that IP from this host, add a hosts-file mapping. The server TLS certificate is issued by a PRIVATE CA that is NOT pre-trusted on this host; set up trust per your runbook. The application depends on SQL Server and RabbitMQ at 10.10.190.33 (reachable from this host). The exercise command runs about 2 minutes and exits on its own. Default shell is bash; a sudo password is available.",
+  "upgradeConstraints": {
+    "pinnedPairs": [
+      {
+        "name": "bootstrap-vs-frontend-manifest",
+        "packageIds": [
+          "bootstrap"
+        ],
+        "pairedPath": "deploy/frontend-versions.json",
+        "pairedPattern": "\"bootstrap\"\\s*:\\s*\"([0-9.]+)\"",
+        "match": "exact",
+        "updateTogether": true,
+        "reason": "deploy/frontend-versions.json mirrors the bootstrap webjar version and must move with the pom pin",
+        "nextSteps": [
+          "Bump both files together"
+        ]
+      }
+    ],
+    "holds": [
+      {
+        "name": "font-awesome-4-line",
+        "packageIds": [
+          "font-awesome"
+        ],
+        "allowPrefix": "4.",
+        "reason": "the templates use Font Awesome 4 icon class names; 5+ renames them",
+        "nextSteps": [
+          "Migrate the icon class names in the templates, then lift this hold"
+        ]
+      }
+    ]
+  }
 }
