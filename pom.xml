@@ -39,10 +39,14 @@
     <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
     <spring-format.version>0.0.48</spring-format.version>
     <!-- Align the whole tomcat-embed family (core/el/websocket) on 11.0.27; Boot 4.1.1 manages tomcat via this property.
-         Temporary pin: spring-boot-dependencies 4.1.2 already manages tomcat 11.0.27, so remove this
-         property (and the matching ext['tomcat.version'] in build.gradle) once the Boot parent is bumped
-         to 4.1.2 or later (see PR #45 / follow-up issue). Leaving it in place would shadow the tomcat
-         version managed by future Boot parents and block container security upgrades. -->
+         Temporary pin - removal condition: delete this property (and ext['tomcat.version'] in build.gradle) only
+         when BOTH the Boot parent here AND the org.springframework.boot Gradle plugin in build.gradle are 4.1.2
+         or later (spring-boot-dependencies 4.1.2 manages tomcat 11.0.27; see PR #45). Dropping only one side
+         silently regresses the other build surface (parent 4.1.2 + plugin 4.1.1 -> Gradle jar back to 11.0.24;
+         plugin 4.1.2 + parent 4.1.1 -> Maven war back to 11.0.24). Never leave two <tomcat.version> declarations:
+         Maven silently keeps the LAST one (see PR #42). Tracked in the PR #46 body checklist (repo has issues
+         disabled). Leaving this pin in place past 4.1.2 would shadow the tomcat version managed by future Boot
+         parents and block container security upgrades. -->
     <tomcat.version>11.0.27</tomcat.version>
 
   </properties>

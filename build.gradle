@@ -26,8 +26,10 @@ repositories {
 }
 
 // Align the tomcat-embed family (core/el/websocket) with the Maven build (pom.xml <tomcat.version>).
-// Temporary pin: remove together with the pom.xml property once the Boot parent/plugin is 4.1.2+
-// (spring-boot-dependencies 4.1.2 already manages tomcat 11.0.27). See follow-up issue.
+// Temporary pin - removal condition: delete this line (and <tomcat.version> in pom.xml) only when BOTH
+// the org.springframework.boot Gradle plugin here AND the Boot parent in pom.xml are 4.1.2 or later
+// (spring-boot-dependencies 4.1.2 manages tomcat 11.0.27; see PR #45). Removing only one side silently
+// regresses the other build surface to Tomcat 11.0.24. Tracked in the PR #46 body checklist.
 ext['tomcat.version'] = "11.0.27"
 
 ext.checkstyleVersion = "14.1.0"
