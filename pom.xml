@@ -486,11 +486,13 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>11.0.25</version>
-      </dependency>
+      <!--
+        The former org.apache.tomcat.embed:tomcat-embed-core 11.0.25 pin was removed with the
+        spring-boot-starter-parent 4.1.2 upgrade: the Boot 4.1.2 BOM manages the whole
+        tomcat-embed family at tomcat.version 11.0.27, so the single-artifact pin only made
+        tomcat-embed-core lag tomcat-embed-el/-websocket. The family is now aligned by the
+        parent BOM alone (still >= 11.0.25, i.e. the security fix is kept).
+      -->
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
         <artifactId>httpclient5</artifactId>
