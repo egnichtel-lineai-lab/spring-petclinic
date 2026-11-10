@@ -25,6 +25,11 @@ repositories {
   mavenCentral()
 }
 
+// Align the tomcat-embed family (core/el/websocket) with the Maven build (pom.xml <tomcat.version>).
+// Temporary pin: remove together with the pom.xml property once the Boot parent/plugin is 4.1.2+
+// (spring-boot-dependencies 4.1.2 already manages tomcat 11.0.27). See follow-up issue.
+ext['tomcat.version'] = "11.0.27"
+
 ext.checkstyleVersion = "14.1.0"
 ext.springJavaformatCheckstyleVersion = "0.0.43"
 ext.webjarsLocatorLiteVersion = "1.0.1"
