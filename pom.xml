@@ -491,10 +491,45 @@
         <artifactId>tomcat-embed-core</artifactId>
         <version>11.0.25</version>
       </dependency>
+      <!-- Keep the whole HttpComponents family aligned with httpclient5 5.6.5:
+           5.6.5 ships against httpcore5 5.4.4, while spring-boot-starter-parent 4.1.1
+           still manages the family at httpclient5 5.6.4 / httpcore5 5.4.3. Pinning only
+           httpclient5 would split the family (5.6.5 client against 5.6.4 cache/fluent/
+           observation and 5.4.3 httpcore5), a combination neither Boot nor Apache ships. -->
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
         <artifactId>httpclient5</artifactId>
         <version>5.6.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5-cache</artifactId>
+        <version>5.6.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5-fluent</artifactId>
+        <version>5.6.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5-observation</artifactId>
+        <version>5.6.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.core5</groupId>
+        <artifactId>httpcore5</artifactId>
+        <version>5.4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.core5</groupId>
+        <artifactId>httpcore5-h2</artifactId>
+        <version>5.4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents.core5</groupId>
+        <artifactId>httpcore5-reactive</artifactId>
+        <version>5.4.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
