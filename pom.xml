@@ -38,6 +38,8 @@
     <maven-checkstyle.version>3.6.0</maven-checkstyle.version>
     <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
     <spring-format.version>0.0.48</spring-format.version>
+    <!-- Align the whole tomcat-embed family (core/el/websocket) on 11.0.27; Boot 4.1.1 manages tomcat via this property. -->
+    <tomcat.version>11.0.27</tomcat.version>
 
   </properties>
 
@@ -486,11 +488,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>11.0.27</version>
-      </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
         <artifactId>httpclient5</artifactId>
