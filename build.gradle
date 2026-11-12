@@ -30,6 +30,7 @@ ext.springJavaformatCheckstyleVersion = "0.0.43"
 ext.webjarsLocatorLiteVersion = "1.0.1"
 ext.webjarsFontawesomeVersion = "4.7.0"
 ext.webjarsBootstrapVersion = "5.3.3"
+ext['tomcat.version'] = '11.0.27'
 
 dependencies {
   // Workaround for AOT issue (https://github.com/spring-projects/spring-framework/pull/33949) -->
