@@ -13,7 +13,9 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    # Lab (prodsim-tng): the Lineai tenant is LAN-only, so this runs on the
+    # lab's self-hosted runner instead of a GitHub-hosted one.
+    runs-on: self-hosted
     strategy:
       matrix:
         java: [ '21' ]
@@ -44,6 +46,16 @@ jobs:
             echo "Workflow: ${{ github.workflow }}" >> "${{ github.workspace }}/build.log"
             echo "Job status: ${{ job.status }}" >> "${{ github.workspace }}/build.log"
           fi
+      - name: Capture lab CA for the send step (TOFU, like ssh accept-new)
+        if: always()
+        shell: bash
+        env:
+          LINEAI_HOST: ${{ vars.LINEAI_HOST }}
+        run: |
+          host="${LINEAI_HOST#https://}"; host="${host%%/*}"
+          echo | openssl s_client -connect "$host:443" -servername "$host" -showcerts 2>/dev/null \
+            | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' > "$GITHUB_WORKSPACE/.lab-ca.pem"
+          echo "chain certs: $(grep -c 'BEGIN CERTIFICATE' "$GITHUB_WORKSPACE/.lab-ca.pem")"
       - name: Send Lineai Build Info
         if: always()
         uses: lineai-intelligence/lineai-send-build-info-github-action@v1.0.3
@@ -57,3 +69,7 @@ jobs:
           build_status: ${{ job.status }}
           pipeline_system: GitHub Actions
           log_file: /github/workspace/build.log
+        env:
+          # Lab: curl inside the action container trusts the lab CA through the
+          # standard CURL_CA_BUNDLE mechanism (the workspace is /github/workspace).
+          CURL_CA_BUNDLE: /github/workspace/.lab-ca.pem

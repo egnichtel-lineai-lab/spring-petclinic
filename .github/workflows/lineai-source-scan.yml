@@ -24,9 +24,56 @@ permissions:
 
 jobs:
   source-scan:
-    runs-on: ubuntu-latest
+    # Lab (prodsim-tng): the Lineai tenant is LAN-only — run on the lab's
+    # self-hosted runner instead of a GitHub-hosted one.
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prepare lab CA trust (self-hosted lab; TOFU like ssh accept-new)
+        shell: bash
+        env:
+          LINEAI_HOST: ${{ vars.LINEAI_HOST }}
+        run: |
+          host="${LINEAI_HOST#https://}"; host="${host%%/*}"
+          mkdir -p "$RUNNER_TEMP/lab-ca"
+          # Preferred root source: the runner host's installed lab CA — it is
+          # the complete self-signed root. The TOFU capture below only sees
+          # the SERVED chain, which omits the root (servers usually do), and
+          # .NET chain validation fails with PartialChain without it.
+          host_ca=/usr/local/share/ca-certificates/prodsim-tng-local-ca.crt
+          if [ -s "$host_ca" ]; then
+            cat "$host_ca" > "$RUNNER_TEMP/lab-ca/lab-ca.pem"
+          else
+            : > "$RUNNER_TEMP/lab-ca/lab-ca.pem"
+          fi
+          # TOFU capture of the served chain (leaf + intermediates).
+          echo | openssl s_client -connect "$host:443" -servername "$host" -showcerts 2>/dev/null \
+            | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' >> "$RUNNER_TEMP/lab-ca/lab-ca.pem"
+          # Fallback root source when the host CA is absent: the lab host's
+          # admin UI serves the real root on loopback.
+          if [ ! -s "$host_ca" ]; then
+            curl -sf http://127.0.0.1:9090/api/ca.pem >> "$RUNNER_TEMP/lab-ca/lab-ca.pem" || true
+          fi
+          rm -f "$RUNNER_TEMP/lab-ca/truststore.jks" "$RUNNER_TEMP/lab-ca/cert-"* 2>/dev/null || true
+          csplit -s -z -f "$RUNNER_TEMP/lab-ca/cert-" "$RUNNER_TEMP/lab-ca/lab-ca.pem" '/BEGIN CERTIFICATE/' '{*}'
+          # A bundle without a self-signed root guarantees PartialChain later
+          # and silent zero-upload — fail HERE, loudly, instead.
+          roots=0
+          for c in "$RUNNER_TEMP/lab-ca/cert-"*; do
+            subject="$(openssl x509 -in "$c" -noout -subject 2>/dev/null)"
+            issuer="$(openssl x509 -in "$c" -noout -issuer 2>/dev/null)"
+            [ -n "$subject" ] && [ "${subject#subject=}" = "${issuer#issuer=}" ] && roots=$((roots+1))
+          done
+          if [ "$roots" -eq 0 ]; then
+            echo "::error::lab CA bundle contains no self-signed root — .NET chain validation would fail (PartialChain) and upload nothing. Install the lab CA on the runner host (trust-ca.sh) or expose the admin UI ca.pem."
+            exit 1
+          fi
+          for c in "$RUNNER_TEMP/lab-ca/cert-"*; do
+            keytool -importcert -noprompt -alias "lab-$(basename "$c")" -file "$c" \
+              -keystore "$RUNNER_TEMP/lab-ca/truststore.jks" -storepass lab-trust
+          done
+          echo "LAB_CA_DIR=$RUNNER_TEMP/lab-ca" >> "$GITHUB_ENV"
 
       - name: Detect project type
         id: detect
@@ -123,6 +170,8 @@ jobs:
             --env AGENT_UUID \
             --env AGENT_PASSWORD \
             --env JAVA_METHOD_FILTER \
+            --env JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/lab-ca/truststore.jks -Djavax.net.ssl.trustStorePassword=lab-trust" \
+            --volume "$LAB_CA_DIR:/lab-ca:ro" \
             --env SCAN_PATH_FILTER=java \
             --env SCAN_PATH_DEPTH=-1 \
             --volume "${{ github.workspace }}:/scan" \
@@ -211,6 +260,8 @@ jobs:
             --env LINEAI_HOST \
             --env AGENT_UUID \
             --env AGENT_PASSWORD \
+            --env SSL_CERT_FILE=/lab-ca/lab-ca.pem \
+            --volume "$LAB_CA_DIR:/lab-ca:ro" \
             --env NUGET_PACKAGES="$nuget_packages" \
             --env NuGetAudit=false \
             --env NoWarn="NU1901;NU1902;NU1903;NU1904" \
@@ -266,6 +317,8 @@ jobs:
             --env LINEAI_HOST="$lineai_host" \
             --env AGENT_UUID \
             --env AGENT_PASSWORD \
+            --env NODE_EXTRA_CA_CERTS=/lab-ca/lab-ca.pem \
+            --volume "$LAB_CA_DIR:/lab-ca:ro" \
             --volume "$js_scan_root:/scan:ro" \
             lineaipublic.azurecr.io/lineai_javascript:latest \
             analyze \
